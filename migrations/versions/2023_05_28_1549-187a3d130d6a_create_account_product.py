@@ -45,6 +45,13 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(["account_id"], ["account.id"], ),
         sa.PrimaryKeyConstraint("id"),
     )
+    op.create_table(
+        "invalid_token",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("token", sa.String(300), nullable=False),
+        sa.Column('create_date', sa.DateTime(), nullable=False),
+        sa.PrimaryKeyConstraint("id"),
+    )
 
 
 def downgrade() -> None:
