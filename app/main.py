@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 
+from app.router import auth
+from app.utils.error_response import custom_http_exception_handler
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
 app = FastAPI()
 
+app.include_router(auth.router)
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+app.add_exception_handler(StarletteHTTPException, custom_http_exception_handler)
+{}

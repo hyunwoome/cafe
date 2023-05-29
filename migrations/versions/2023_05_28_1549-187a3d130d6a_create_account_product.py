@@ -7,7 +7,6 @@ Create Date: 2023-05-28 15:49:30.605513
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy import func
 
 # revision identifiers, used by Alembic.
 revision = '187a3d130d6a'
@@ -20,8 +19,8 @@ def upgrade() -> None:
     op.create_table(
         'account',
         sa.Column('id', sa.Integer(), primary_key=True),
-        sa.Column('phone', sa.Integer(), nullable=False),
-        sa.Column('hashed_password', sa.String(30), nullable=False),
+        sa.Column('phone', sa.String(20), nullable=False),
+        sa.Column('password', sa.String(100), nullable=False),
         sa.Column('is_superuser', sa.Boolean(), nullable=True),
         sa.Column('create_date', sa.DateTime(), nullable=False),
         sa.Column('update_date', sa.DateTime(), nullable=True),
@@ -44,6 +43,13 @@ def upgrade() -> None:
         sa.Column('update_date', sa.DateTime(), nullable=True),
         sa.Column('delete_date', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(["account_id"], ["account.id"], ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_table(
+        "invalid_token",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("token", sa.String(300), nullable=False),
+        sa.Column('create_date', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
 
