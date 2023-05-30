@@ -5,6 +5,8 @@ services:
     image: fastapi
     container_name: fastapi
     command: uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+    environment:
+      TZ: Asia/Seoul
     build:
       dockerfile: Dockerfile
     ports:
