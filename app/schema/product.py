@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 # shared properties
 class ProductBase(BaseModel):
-    update_date: datetime.datetime
-    delete_date: datetime.datetime
+    update_date: Optional[datetime.datetime]
+    delete_date: Optional[datetime.datetime]
 
 
 # Properties to receive via API on creation
@@ -24,14 +24,14 @@ class ProductCreate(ProductBase):
 
 # Properties to receive via API on update
 class ProductUpdate(ProductBase):
-    category: str
-    size: str
-    name: str
-    price: int
-    cost: int
-    description: str
-    barcode: str
-    expiration_date: datetime.datetime
+    category: Optional[str]
+    size: Optional[str]
+    name: Optional[str]
+    price: Optional[int]
+    cost: Optional[int]
+    description: Optional[str]
+    barcode: Optional[str]
+    expiration_date: Optional[datetime.datetime]
 
 
 class ProductInDBBase(ProductBase):
