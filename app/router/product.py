@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from starlette.requests import Request
 
 from app.crud.product import crud_create_product, crud_get_product, crud_delete_product, crud_update_product, \
-    crud_get_product_list
+    crud_get_product_list, crud_search_product_list
 from app.database import get_db
 from app.schema.product import ProductCreate, ProductUpdate
 
@@ -42,9 +42,9 @@ def delete_product(request: Request, product_id: int, db: Session = Depends(get_
 
 # 상품 리스트 조회
 @router.get('/list', summary='Get product list')
-def get_product_list(request: Request, db: Session = Depends(get_db)):
+def get_product_list(request: Request, last_seen_id: int = None, limit: int = 10, db: Session = Depends(get_db)):
     get_current_account(token=request.headers.get('authorization'), db=db)
-    product_list = crud_get_product_list(db)
+    product_list = crud_get_product_list(db, last_seen_id, limit)
     json_product_list = jsonable_encoder(product_list)
     data = {
         'product_list': json_product_list
@@ -57,6 +57,18 @@ def get_product_list(request: Request, db: Session = Depends(get_db)):
 def get_product(request: Request, product_id: int, db: Session = Depends(get_db)):
     account = get_current_account(token=request.headers.get('authorization'), db=db)['account']
     product = crud_get_product(db, account.id, product_id)
+    json_product = jsonable_encoder(product)
+    data = {
+        'product': json_product
+    }
+    return Response(code=200, message='ok', data=data)
+
+
+# 상품 검색
+@router.get('', summary='Search Product')
+def search_product(search: str, request: Request, db: Session = Depends(get_db)):
+    get_current_account(token=request.headers.get('authorization'), db=db)
+    product = crud_search_product_list(db, search)
     json_product = jsonable_encoder(product)
     data = {
         'product': json_product

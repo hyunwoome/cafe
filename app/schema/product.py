@@ -15,6 +15,7 @@ class ProductCreate(ProductBase):
     category: str
     size: str
     name: str
+    tag: str
     price: int
     cost: int
     description: str
@@ -27,6 +28,7 @@ class ProductUpdate(ProductBase):
     category: Optional[str]
     size: Optional[str]
     name: Optional[str]
+    tag: Optional[str]
     price: Optional[int]
     cost: Optional[int]
     description: Optional[str]
