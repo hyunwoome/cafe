@@ -19,7 +19,7 @@ def create_account(_account_create: AccountCreate, db: Session = Depends(get_db)
     if account:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='이미 계정이 존재합니다.')
     crud_create_account(db=db, account_create=_account_create)
-    return Response(code=200, message='ok', data=None)
+    return Response(code=status.HTTP_200_OK, message='ok', data=None)
 
 
 @router.post("/login", summary='Create access token')
@@ -39,11 +39,11 @@ def login_for_access_token(_account_create: AccountCreate,
         "Authorization": access_token,
     }
 
-    return Response(code=200, message='ok', data=data, headers=headers)
+    return Response(code=status.HTTP_200_OK, message='ok', data=data, headers=headers)
 
 
 @router.get("/logout", summary='Expired access token')
 def logout(authorization: str = Header(default=None), db: Session = Depends(get_db)):
     token = get_current_account(authorization, db=db)['token']
     crud_save_token(db, token)
-    return Response(code=200, message='ok', data=None)
+    return Response(code=status.HTTP_200_OK, message='ok', data=None)

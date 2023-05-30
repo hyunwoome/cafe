@@ -11,7 +11,7 @@ authorization_header = ''
 def test_create_account():
     response = client.post(
         '/api/auth/signup',
-        json={'phone': '01072574267', 'password': '13201320'},
+        json={'phone': '01072574266', 'password': '13201320'},
     )
     assert response.status_code == status.HTTP_200_OK
 
@@ -20,7 +20,7 @@ def test_login_for_access_token():
     global authorization_header
     response = client.post(
         '/api/auth/login',
-        json={'phone': '01072574267', 'password': '13201320'},
+        json={'phone': '01072574266', 'password': '13201320'},
     )
     authorization_header = response.headers.get('authorization')
     assert response.status_code == status.HTTP_200_OK
@@ -32,7 +32,7 @@ def test_create_product():
         '/api/product',
         json={
             "category": "음료",
-            "size": "M",
+            "size": "small",
             "name": "뜨거운 아메리카노 테스트",
             "tag": "ㄸㄱㅇ,ㅇㅁㄹㅋㄴ",
             "price": 3000,

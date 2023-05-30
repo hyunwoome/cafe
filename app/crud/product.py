@@ -55,7 +55,7 @@ def crud_update_product(db: Session, _product_update: ProductUpdate, account_id:
 
 def crud_delete_product(db: Session, account_id: int, product_id: int):
     product = db.query(Product).filter(
-        Product.id == product_id, Product.account_id == account_id
+        Product.id == product_id, Product.account_id == account_id, Product.delete_date == None
     ).first()
     if product:
         product.delete_date = func.now()
@@ -65,21 +65,21 @@ def crud_delete_product(db: Session, account_id: int, product_id: int):
 
 def crud_get_product(db: Session, account_id: int, product_id: int):
     return db.query(Product).filter(
-        Product.id == product_id, Product.account_id == account_id
+        Product.id == product_id, Product.account_id == account_id, Product.delete_date == None
     ).first()
 
 
 def crud_get_product_list(db: Session, last_seen_id, limit):
     if last_seen_id:
-        return db.query(Product).filter(Product.id < last_seen_id).order_by(Product.id.desc()).limit(limit).all()
+        return db.query(Product).filter(Product.id < last_seen_id, Product.delete_date == None).order_by(Product.id.desc()).limit(limit).all()
 
-    return db.query(Product).order_by(Product.id.desc()).limit(limit).all()
+    return db.query(Product).filter(Product.delete_date == None).order_by(Product.id.desc()).limit(limit).all()
 
 
 def crud_search_product_list(db: Session, search: str):
-    product_name = db.query(Product).filter(Product.name.like(f'%{search}%')).all()
+    product_name = db.query(Product).filter(Product.name.like(f'%{search}%'), Product.delete_date == None).all()
     if product_name:
         return product_name
-    product_tag = db.query(Product).filter(Product.tag.like(f'%{search}%')).all()
+    product_tag = db.query(Product).filter(Product.tag.like(f'%{search}%'), Product.delete_date == None).all()
     if product_tag:
         return product_tag
