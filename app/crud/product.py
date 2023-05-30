@@ -13,6 +13,7 @@ def crud_create_product(db: Session, _product_create: ProductCreate, account_id:
                          category=_product_create.category,
                          size=_product_create.size,
                          name=_product_create.name,
+                         tag=_product_create.tag,
                          price=_product_create.price,
                          cost=_product_create.cost,
                          description=_product_create.description,
@@ -35,6 +36,8 @@ def crud_update_product(db: Session, _product_update: ProductUpdate, account_id:
             product.size = _product_update.size
         if _product_update.name:
             product.name = _product_update.name
+        if _product_update.tag:
+            product.tag = _product_update.tag
         if _product_update.price:
             product.price = _product_update.price
         if _product_update.cost:
@@ -52,7 +55,7 @@ def crud_update_product(db: Session, _product_update: ProductUpdate, account_id:
 
 def crud_delete_product(db: Session, account_id: int, product_id: int):
     product = db.query(Product).filter(
-        Product.id == product_id, Product.account_id == account_id, Product.delete_date == None
+        Product.id == product_id, Product.account_id == account_id
     ).first()
     if product:
         product.delete_date = func.now()
@@ -66,5 +69,17 @@ def crud_get_product(db: Session, account_id: int, product_id: int):
     ).first()
 
 
-def crud_get_product_list(db: Session):
-    return db.query(Product).order_by(Product.id.desc()).all()
+def crud_get_product_list(db: Session, last_seen_id, limit):
+    if last_seen_id:
+        return db.query(Product).filter(Product.id < last_seen_id).order_by(Product.id.desc()).limit(limit).all()
+
+    return db.query(Product).order_by(Product.id.desc()).limit(limit).all()
+
+
+def crud_search_product_list(db: Session, search: str):
+    product_name = db.query(Product).filter(Product.name.like(f'%{search}%')).all()
+    if product_name:
+        return product_name
+    product_tag = db.query(Product).filter(Product.tag.like(f'%{search}%')).all()
+    if product_tag:
+        return product_tag

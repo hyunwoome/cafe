@@ -1,14 +1,9 @@
-from datetime import datetime, timedelta
-
 from fastapi import APIRouter, Depends, HTTPException, Header
-from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
 from sqlalchemy.orm import Session
 from starlette import status
 from app.utils.utils import verify_password, create_access_token, get_current_account
 from app.database import get_db
-from app.crud.auth import crud_create_account, crud_get_existing_account, crud_get_account, crud_save_token, \
-    crud_check_invalid_token
+from app.crud.auth import crud_create_account, crud_get_existing_account, crud_get_account, crud_save_token
 from app.schema.account import AccountCreate
 
 from app.utils.response import Response
@@ -24,7 +19,7 @@ def create_account(_account_create: AccountCreate, db: Session = Depends(get_db)
     if account:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='이미 계정이 존재합니다.')
     crud_create_account(db=db, account_create=_account_create)
-    return Response(code=204, message='ok', data=None)
+    return Response(code=200, message='ok', data=None)
 
 
 @router.post("/login", summary='Create access token')

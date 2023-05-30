@@ -44,14 +44,15 @@ def get_current_account(token: str, db: Session):
                 detail='인증되지 않은 사용자입니다.',
             )
 
-        split_token = token.split(" ")[1]
+        if len(token.split(" ")) == 2:
+            token = token.split(" ")[1]
 
         payload = jwt.decode(
-            split_token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
+            token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
         )
 
         # 로그아웃 한 경우
-        invalid_token = db.query(InvalidToken).filter(InvalidToken.token == split_token).first()
+        invalid_token = db.query(InvalidToken).filter(InvalidToken.token == token).first()
         if invalid_token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

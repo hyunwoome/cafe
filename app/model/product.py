@@ -12,6 +12,7 @@ class Product(Base):
     category = Column(String, nullable=False)
     size = Column(String, nullable=False)
     name = Column(String, nullable=False)
+    tag = Column(String, nullable=True)
     price = Column(Integer, nullable=False)
     cost = Column(Integer, nullable=False)
     description = Column(Text, nullable=False)
