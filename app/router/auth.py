@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from app.utils.utils import verify_password, create_access_token, get_current_account
 from app.database import get_db
-from app.crud.auth import crud_create_account, crud_get_existing_account, crud_get_account, crud_save_token
+from app.crud.auth import crud_create_account, crud_get_existing_account, crud_save_token
 from app.schema.account import AccountCreate
 
 from app.utils.response import Response
@@ -13,6 +13,7 @@ router = APIRouter(
 )
 
 
+# 회원가입
 @router.post('/signup', summary='Create account')
 def create_account(_account_create: AccountCreate, db: Session = Depends(get_db)):
     account = crud_get_existing_account(db, _account_create)
@@ -22,10 +23,11 @@ def create_account(_account_create: AccountCreate, db: Session = Depends(get_db)
     return Response(code=status.HTTP_200_OK, message='ok', data=None)
 
 
+# 로그인
 @router.post("/login", summary='Create access token')
 def login_for_access_token(_account_create: AccountCreate,
                            db: Session = Depends(get_db)):
-    account = crud_get_account(db, _account_create.phone)
+    account = crud_get_existing_account(db, _account_create)
     if not account or not verify_password(_account_create.password, account.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -42,6 +44,7 @@ def login_for_access_token(_account_create: AccountCreate,
     return Response(code=status.HTTP_200_OK, message='ok', data=data, headers=headers)
 
 
+# 로그아웃
 @router.get("/logout", summary='Expired access token')
 def logout(authorization: str = Header(default=None), db: Session = Depends(get_db)):
     token = get_current_account(authorization, db=db)['token']
