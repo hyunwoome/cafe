@@ -10,6 +10,11 @@
 ### 2. Project Settings
 
 ```shell
+# project clone
+$ git clone git@github.com:hyunwoome/cafe.git
+```
+
+```shell
 # .env.sample -> .env
 DB_USER=root
 DB_PASSWORD=admin
@@ -25,16 +30,12 @@ HASH_ALGORITHM=HS256
 ```
 
 ```shell
-# project clone
-$ git clone git@github.com:hyunwoome/cafe.git
-
 # run docker compose
 $ docker-compose up
 
 # fastapi container connect
 $ docker exec -it fastapi-container /bin/bash
-# migration
-$ alembic upgrade head
+$ alembic upgrade head # migration
 
 # running server
 http://localhost:8080/
@@ -47,8 +48,7 @@ http://localhost:8080/
 
 # fastapi container connect
 $ docker exec -it fastapi-container /bin/bash
-# run test
-$ pytest
+$ pytest # run test
 ```
 
 ### 4. API
