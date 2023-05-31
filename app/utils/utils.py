@@ -11,30 +11,35 @@ from starlette import status
 from app.model.account import Account
 from app.model.auth import InvalidToken
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
-JWT_SECRET_KEY = "4ab2fce7a6bd79e1c014396315ed322dd6edb1c5d975c6b74a2904135172c03c"
-JWT_REFRESH_SECRET_KEY = "4ab2fce7a6bd79e1c014396315ed322dd6edb1c5d975c6b74a2904135172c031"
-ALGORITHM = "HS256"
+import os
+
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+HASH_ALGORITHM = os.getenv('HASH_ALGORITHM')
 
 password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+# 비밀번호 해시처리
 def get_hashed_password(password: str) -> str:
     return password_context.hash(password)
 
 
+# 비밀번호 검증
 def verify_password(password: str, hashed_pass: str) -> bool:
     return password_context.verify(password, hashed_pass)
 
 
+# 액세스 토큰 생성
 def create_access_token(subject: Union[str, Any]) -> str:
-    expires_delta = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expires_delta = datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
 
     to_encode = {"exp": expires_delta, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, HASH_ALGORITHM)
     return encoded_jwt
 
 
+# 인증 확인 및 사용자 정보 반환
 def get_current_account(token: str, db: Session):
     try:
         # 토큰이 아에 없는 경우
@@ -48,7 +53,7 @@ def get_current_account(token: str, db: Session):
             token = token.split(" ")[1]
 
         payload = jwt.decode(
-            token, JWT_SECRET_KEY, algorithms=[ALGORITHM]
+            token, JWT_SECRET_KEY, algorithms=[HASH_ALGORITHM]
         )
 
         # 로그아웃 한 경우

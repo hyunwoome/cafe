@@ -17,9 +17,9 @@ services:
     container_name: mysql-container
     image: mysql:5.7
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:${DB_PORT}"
     environment:
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       TZ: Asia/Seoul
     volumes:
       - ./db/conf.d:/etc/mysql/conf.d

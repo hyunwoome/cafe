@@ -5,7 +5,6 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI(default_timezone='Asia/Seoul')
 
-
 app.include_router(auth.router)
 app.include_router(product.router)
 

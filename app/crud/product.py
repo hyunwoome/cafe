@@ -8,6 +8,7 @@ from app.schema.product import ProductCreate, ProductUpdate
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
+# 상품 생성
 def crud_create_product(db: Session, _product_create: ProductCreate, account_id: int):
     db_product = Product(account_id=account_id,
                          category=_product_create.category,
@@ -25,6 +26,7 @@ def crud_create_product(db: Session, _product_create: ProductCreate, account_id:
     db.commit()
 
 
+# 상품 정보 수정
 def crud_update_product(db: Session, _product_update: ProductUpdate, account_id: int, product_id: int):
     product = db.query(Product).filter(
         Product.id == product_id, Product.account_id == account_id, Product.delete_date == None
@@ -53,6 +55,7 @@ def crud_update_product(db: Session, _product_update: ProductUpdate, account_id:
         db.refresh(product)
 
 
+# 상품 삭제 (소프트)
 def crud_delete_product(db: Session, account_id: int, product_id: int):
     product = db.query(Product).filter(
         Product.id == product_id, Product.account_id == account_id, Product.delete_date == None
@@ -63,19 +66,23 @@ def crud_delete_product(db: Session, account_id: int, product_id: int):
         db.refresh(product)
 
 
+# 상품 상세 조회
 def crud_get_product(db: Session, account_id: int, product_id: int):
     return db.query(Product).filter(
         Product.id == product_id, Product.account_id == account_id, Product.delete_date == None
     ).first()
 
 
+# 상품 리스트 조회
 def crud_get_product_list(db: Session, last_seen_id, limit):
     if last_seen_id:
-        return db.query(Product).filter(Product.id < last_seen_id, Product.delete_date == None).order_by(Product.id.desc()).limit(limit).all()
+        return db.query(Product).filter(Product.id < last_seen_id, Product.delete_date == None).order_by(
+            Product.id.desc()).limit(limit).all()
 
     return db.query(Product).filter(Product.delete_date == None).order_by(Product.id.desc()).limit(limit).all()
 
 
+# 상품 검색
 def crud_search_product_list(db: Session, search: str):
     product_name = db.query(Product).filter(Product.name.like(f'%{search}%'), Product.delete_date == None).all()
     if product_name:
