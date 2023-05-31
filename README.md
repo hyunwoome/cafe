@@ -21,14 +21,8 @@ $ source venv/bin/activate
 # package install
 $ pip install -r requirements.txt
 
-# docker build
-$ docker build -t fastapi .
-
 # run docker compose
 $ docker-compose up
-
-# create database
-$ CREATE DATABASE cafe;
 
 # migration
 $ alembic upgrade head
@@ -37,16 +31,16 @@ $ alembic upgrade head
 ### 3. Test
 
 ```shell
-# 프로젝트 세팅 후 진행 (DB초기화를 위해 docker-compose reset)
+# account, product 데이터 제거 후 진행
 
-# create database (after connect DB)
-$ CREATE DATABASE cafe;
+# run docker compose
+$ docker-compose up
 
 # migration
 $ alembic upgrade head
 
 # fastapi container connect
-$ docker exec -it fastapi /bin/bash
+$ docker exec -it fastapi-container /bin/bash
 
 # run pytest
 $ pytest
@@ -63,3 +57,10 @@ $ pytest
 - [GET] 상품 리스트 조회 (`/api/product/list?last_seen_id=`)
 - [GET] 상품 상세 조회 (`/api/product/{product_id}`)
 - [GET] 상품 검색 (`/api/product?search=`)
+
+
+### 5. 보완 사항
+
+- [ ] 일회성 test 고도화 (mockdata 사용해서 DB랑 분리)
+- [ ] invalid_token 테이블을 redis로 전환
+- [ ] 환경 변수 분리
