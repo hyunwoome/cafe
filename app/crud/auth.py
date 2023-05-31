@@ -24,7 +24,7 @@ def crud_get_account(db: Session, phone: str):
 
 
 def crud_save_token(db: Session, invalid_token: str):
-    get_invalid_token = InvalidToken(token=invalid_token.split(" ")[1], create_date=func.now())
+    get_invalid_token = InvalidToken(token=invalid_token, create_date=func.now())
     db.add(get_invalid_token)
     db.commit()
 

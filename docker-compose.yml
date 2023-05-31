@@ -1,12 +1,9 @@
-version: "3"
+version: "2"
 
 services:
   fastapi:
-    image: fastapi
-    container_name: fastapi
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
-    environment:
-      TZ: Asia/Seoul
+    container_name: fastapi-container
+    image: fastapi_image
     build:
       dockerfile: Dockerfile
     ports:
@@ -17,16 +14,14 @@ services:
       - ./app:/code/app
 
   mysql:
+    container_name: mysql-container
     image: mysql:5.7
-    container_name: mysql
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: admin
       TZ: Asia/Seoul
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --init-file /docker-entrypoint-initdb.d/init.sql
     volumes:
-      - ./db_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
